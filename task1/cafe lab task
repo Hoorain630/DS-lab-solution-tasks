@@ -1,0 +1,33 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    
+    int quant1,quant2,quant3,total;
+    
+    int espresso=200,latte=500,cappucino=1000;
+    
+    int *espressoqty=&quant1,
+        *latteqty=&quant2,
+        *cappucinoqty=&quant3;
+        
+    int *espressoprice=&espresso,
+        *latteprice=&latte,
+        *cappucinoprice=&cappucino;
+    
+    cout<<"enter the quantity of espresso : ";
+    cin>>*espressoqty;
+    cout<<"enter the quantity of latte : ";
+    cin>> *latteqty;
+    cout<<"enter the quantity of cappuccino : ";
+    cin>>*cappucinoqty;
+    
+
+    total=(*espressoqty * *espressoprice)+(*latteqty * *latteprice)+(*cappucinoqty * *cappucinoprice);
+    
+    cout<<"your total bill = "<<total;
+    
+    
+
+    return 0;
+}
