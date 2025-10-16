@@ -1,0 +1,111 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+using namespace std;
+
+
+struct Node {
+    string ip;
+    Node* prev;
+    Node* next;
+
+    Node(string ipAddress) {
+        ip = ipAddress;
+        prev = nullptr;
+        next = nullptr;
+    }
+};
+
+
+class DoublyLinkedList {
+private:
+    Node* head;
+    Node* tail;
+
+public:
+    DoublyLinkedList() {
+        head = nullptr;
+        tail = nullptr;
+    }
+
+    void insert(string ipAddress) {
+        Node* newNode = new Node(ipAddress);
+
+        if (!head) {
+            head = tail = newNode;
+        } else {
+            tail->next = newNode;
+            newNode->prev = tail;
+            tail = newNode;
+        }
+    }
+
+
+    void displayForward() {
+        Node* temp = head;
+        cout << "Forward traversal:\n";
+        while (temp) {
+            cout << temp->ip;
+            if (temp->next) cout << " -> ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+
+ 
+    void displayBackward() {
+        Node* temp = tail;
+        cout << "Backward traversal:\n";
+        while (temp) {
+            cout << temp->ip;
+            if (temp->prev) cout << " -> ";
+            temp = temp->prev;
+        }
+        cout << endl;
+    }
+
+  
+    void freeList() {
+        Node* temp = head;
+        while (temp) {
+            Node* nextNode = temp->next;
+            delete temp;
+            temp = nextNode;
+        }
+        head = tail = nullptr;
+    }
+
+    
+    ~DoublyLinkedList() {
+        freeList();
+    }
+};
+
+
+int main() {
+    ifstream file("ips.txt");
+    if (!file) {
+        cout << "Error: Could not open file 'ips.txt'!" << endl;
+        return 1;
+    }
+
+    string line;
+    getline(file, line);
+    file.close();
+
+    DoublyLinkedList ipList;
+    stringstream ss(line);
+    string ip;
+
+   
+    while (getline(ss, ip, ',')) {
+        ipList.insert(ip);
+    }
+
+    
+    ipList.displayForward();
+    ipList.displayBackward();
+
+    return 0;
+}
