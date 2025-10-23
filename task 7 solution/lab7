@@ -1,0 +1,218 @@
+#include <iostream>
+using namespace std;
+
+// ---------------------------
+// Node Class
+// ---------------------------
+class Node {
+public:
+int data;
+Node* next;
+Node* prev;
+
+```
+Node(int val) {
+    data = val;
+    next = nullptr;
+    prev = nullptr;
+}
+```
+
+};
+
+// ---------------------------
+// DLL Class
+// ---------------------------
+class DLL {
+private:
+Node* head;
+
+public:
+DLL() { head = nullptr; }
+
+```
+// ---------------------------
+// 🧱 Task 1 – Destructor
+// ---------------------------
+~DLL() {
+    Node* temp = head;
+    while (temp != nullptr) {
+        Node* nextNode = temp->next;
+        cout << "Deleting Node: " << temp->data << endl;
+        delete temp;
+        temp = nextNode;
+    }
+    cout << "All nodes deleted successfully!" << endl;
+}
+
+// ---------------------------
+// Insert at Beginning
+// ---------------------------
+void insertAtBegin(int val) {
+    Node* newNode = new Node(val);
+    if (head == nullptr) {
+        head = newNode;
+    } else {
+        newNode->next = head;
+        head->prev = newNode;
+        head = newNode;
+    }
+}
+
+// ---------------------------
+// Insert at End
+// ---------------------------
+void insertAtEnd(int val) {
+    Node* newNode = new Node(val);
+    if (head == nullptr) {
+        head = newNode;
+        return;
+    }
+
+    Node* temp = head;
+    while (temp->next != nullptr)
+        temp = temp->next;
+
+    temp->next = newNode;
+    newNode->prev = temp;
+}
+
+// ---------------------------
+// 🧱 Task 2 – Fix insertAtPos
+// ---------------------------
+void insertAtPos(int position, int value) {
+    if (position <= 0) {
+        cout << "Invalid position!" << endl;
+        return;
+    }
+
+    if (position == 1) {
+        insertAtBegin(value);
+        return;
+    }
+
+    Node* temp = head;
+    int count = 1;
+
+    while (temp != nullptr && count < position - 1) {
+        temp = temp->next;
+        count++;
+    }
+
+    if (temp == nullptr) {
+        insertAtEnd(value);
+        return;
+    }
+
+    Node* newNode = new Node(value);
+    newNode->next = temp->next;
+    newNode->prev = temp;
+
+    if (temp->next != nullptr)
+        temp->next->prev = newNode;
+
+    temp->next = newNode;
+}
+
+// ---------------------------
+// 🗑️ Task 3 – Fix deleteFB
+// ---------------------------
+void deleteFB() {
+    if (head == nullptr) {
+        cout << "List is empty!" << endl;
+        return;
+    }
+
+    Node* temp = head;
+    head = head->next;
+
+    if (head != nullptr)
+        head->prev = nullptr;
+
+    cout << "Deleting first node: " << temp->data << endl;
+    delete temp;
+}
+
+// ---------------------------
+// Display entire list
+// ---------------------------
+void Display() {
+    Node* temp = head;
+    cout << "NULL <-> ";
+    while (temp != nullptr) {
+        cout << "[" << temp->data << "] <-> ";
+        temp = temp->next;
+    }
+    cout << "NULL" << endl;
+}
+
+// ---------------------------
+// 🔍 Search node by value
+// ---------------------------
+void search(int value) {
+    Node* temp = head;
+    while (temp != nullptr) {
+        if (temp->data == value) {
+            cout << "Node found!" << endl;
+            DisplayNode(temp);
+            return;
+        }
+        temp = temp->next;
+    }
+    cout << "Node not found!" << endl;
+}
+
+// ---------------------------
+// 🧱 Task 4 – Fix DisplayNode
+// ---------------------------
+void DisplayNode(Node* node) {
+    if (node == nullptr) {
+        cout << "Node is NULL!" << endl;
+        return;
+    }
+
+    cout << "------------------------------------------------------" << endl;
+    cout << "   Prev Address   |   Data   |   Next Address   |   Node Address" << endl;
+    cout << "------------------------------------------------------" << endl;
+    cout << "  " << node->prev << "   |   "
+         << node->data << "   |   "
+         << node->next << "   |   "
+         << node << endl;
+    cout << "------------------------------------------------------" << endl;
+}
+```
+
+};
+
+// ---------------------------
+// Main Function for Testing
+// ---------------------------
+int main() {
+DLL list;
+
+```
+// Task 2: Insert elements
+list.insertAtBegin(10);
+list.insertAtEnd(20);
+list.insertAtEnd(30);
+list.insertAtEnd(40);
+
+// Insert at position 5 (end)
+list.insertAtPos(5, 50);
+cout << "\nAfter insertion:" << endl;
+list.Display();
+
+// Task 3: Delete from beginning
+cout << "\nAfter deleting first node:" << endl;
+list.deleteFB();
+list.Display();
+
+// Task 4: Search and display a specific node
+cout << "\nSearching for node with value 30:" << endl;
+list.search(30);
+
+cout << "\nProgram ending... destructor will now execute:\n";
+return 0;
+```
+
+}
