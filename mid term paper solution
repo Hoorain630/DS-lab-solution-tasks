@@ -1,0 +1,172 @@
+
+#include <iostream>
+using namespace std;
+class node {
+    
+    public:
+    
+    int data;
+    node* next;
+    node* prev;
+    
+    node(int patient_id){
+        
+        data = patient_id;
+        next = nullptr;
+        prev = nullptr;
+    }
+    
+};
+
+
+class hospital_emergency{
+    
+    private:
+    
+    node* head;
+    node* tail;
+    int length;
+    
+    public:
+    
+    hospital_emergency(){
+        
+        head = tail = nullptr;
+        length = 0;
+        
+    }
+    
+    void insert_at_begining(int patient_id){
+        
+        
+        node* newnode = new node(patient_id);
+        
+        if(head==nullptr){
+            head = tail = newnode;
+        }
+        
+        newnode ->next=head;
+        if(head !=nullptr)
+        {
+        head->prev = newnode;
+        head= newnode;
+        length++;
+            
+        }
+        
+    }
+        
+    void insert_at_pos(int patient_id,int pos)
+    {
+        
+        if(pos<1 || pos>(length+1))
+        {
+            cout<<"invalid postion";
+            return ;
+        }
+        
+        node* newnode=new node(patient_id);
+        node *curr=head;
+ 
+        for(int i =1 ; i<(pos-1) ; i++)
+        {
+            curr=curr->next;
+        }
+        
+        newnode->next=curr->next;
+        curr->next->prev=newnode;
+        newnode->prev = curr;
+        curr->next= newnode;
+        
+        
+        length++;
+        
+        
+        
+    }
+    
+    
+    void insert_at_end(int patient_id){
+        
+        node* newnode=new node(patient_id);
+        node* curr = head;
+        
+        if(head==nullptr)
+        {
+            head=tail=newnode;
+        }
+        
+        else{
+        while(curr->next!=nullptr)
+        {
+            curr=curr->next;
+        
+        }
+        curr->next=newnode;
+        newnode->prev=curr;
+        newnode->next=nullptr;
+        }
+        
+        count++;
+    
+    }
+    
+    void deleting_from_begining()
+    {
+        node* curr=head;
+        if(head != nullptr){
+         head= head->next;
+         head->prev=nullptr;
+         delete curr;
+        }
+        length--;
+        
+    }
+    
+    
+    void display(){
+        
+        node* temp=head;
+        
+        while(temp!=nullptr)
+        {
+            cout<<temp->data<<" ";
+            temp=temp->next;
+        }
+        
+    }
+    
+};
+
+
+int main() {
+   
+   hospital_emergency h1;
+   
+   
+   h1.insert_at_end(101);
+   cout<<"normal walk in patient... please wait for ur turn "<<endl;
+    h1.display();
+    cout<<endl;
+   h1.insert_at_end(102);
+   cout<<"normal walk in patient.... please wait for ur turn"<<endl;
+    h1.display();
+    cout<<endl;
+   h1.insert_at_begining(200); 
+   cout<<"critical patient... needs urgent treatment"<<endl;
+    h1.display();
+    cout<<endl;
+  h1.insert_at_pos(150, 2);
+  cout<<"patient needs to be treated after the first one "<<endl;
+   h1.display();
+   cout<<endl;
+  h1.deleting_from_begining();
+  cout<<"critical patient treated ..... discharged"<<endl;
+   h1.display();
+  cout<<endl;
+  h1.insert_at_end(300);
+  cout<<"normal walk in patient ..please wait for ur turn "<<endl;
+  h1.display();
+
+    return 0;
+}
