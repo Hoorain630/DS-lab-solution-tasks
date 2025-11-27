@@ -1,0 +1,121 @@
+#include <iostream>
+using namespace std;
+
+class Queue {
+private:
+    int* arr;
+    int capacity;
+    int frontidx;
+    int rearidx;
+    int currentsize;
+
+    void resize()
+    {
+        int newcapacity = capacity * 2;
+        int* newArr = new int[newcapacity];
+
+        for (int i = 0; i < currentsize; i++) {
+            newArr[i] = arr[(frontidx + i) % capacity];
+        }
+
+        delete[] arr;
+        arr = newArr;
+
+        capacity = newcapacity;
+        frontidx = 0;
+        rearidx = currentsize;
+    }
+
+public:
+
+    Queue(int initialcapacity = 4) {
+        capacity = initialcapacity;
+        frontidx = 0;
+        rearidx = 0;
+        currentsize = 0;
+        arr = new int[capacity];
+    }
+
+    ~Queue() {
+        delete[] arr;
+    }
+
+    bool isempty() const {
+        return (currentsize == 0);
+    }
+
+    int size() const {
+        return currentsize;
+    }
+
+    void enqueue(int value) {
+        if (currentsize == capacity)
+            resize();   
+
+        arr[rearidx] = value;
+        rearidx = (rearidx + 1) % capacity;
+        currentsize++;
+    }
+
+    void dequeue() {
+        if (isempty()) {
+            cout << "Queue underflow! Cannot dequeue.\n";
+            return;
+        }
+        frontidx = (frontidx + 1) % capacity;
+        currentsize--;
+    }
+
+    int front() const {
+        if (isempty()) {
+            cout << "Queue is empty! No front element.\n";
+            return -1;
+        }
+        return arr[frontidx];
+    }
+
+    void print() const {
+        cout << "Queue elements: ";
+        for (int i = 0; i < currentsize; i++) {
+            int index = (frontidx + i) % capacity;
+            cout << arr[index] << " ";
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+
+    Queue q;
+    cout << "Enqueue 10, 20, 30, 40\n";
+    q.enqueue(10);
+    q.enqueue(20);
+    q.enqueue(30);
+    q.enqueue(40);
+
+    q.print();
+    cout << "Front element: " << q.front() << endl;
+
+    cout << "Dequeue two elements\n";
+    q.dequeue();
+    q.dequeue();
+    q.print();
+    cout << "Front element now: " << q.front() << endl;
+
+    cout << "Enqueue 50, 60, 70 (this will cause resize)\n";
+    q.enqueue(50);
+    q.enqueue(60);
+    q.enqueue(70);
+
+    q.print();
+
+    cout << "Dequeuing all elements:\n";
+    while (!q.isempty()) {
+        cout << "Front: " << q.front() << " -> dequeued\n";
+        q.dequeue();
+    }
+
+    q.dequeue(); // shows underflow message
+
+    return 0;
+}
