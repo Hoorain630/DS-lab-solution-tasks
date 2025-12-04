@@ -1,0 +1,171 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class node {
+public:
+    int year;
+    string eventName;
+    node* left;
+    node* right;
+
+    node(int y, string name) {
+        year = y;
+        eventName = name;
+        left = NULL;
+        right = NULL;
+    }
+};
+
+class TimeStream {
+public:
+    node* root;
+
+    TimeStream() {
+        root = NULL;
+    }
+
+    // INSERT FUNCTION
+    node* insertEvent(node* newnode, int year, string name) {
+
+        if (newnode == NULL) {
+            cout << "Adding new year: " << year << endl;
+            return new node(year, name);
+        }
+
+        if (year < newnode->year) {
+            newnode->left = insertEvent(newnode->left, year, name);
+        }
+        else if (year > newnode->year) {
+            newnode->right = insertEvent(newnode->right, year, name);
+        }
+        else {
+            cout << "Year already exists! Cannot insert duplicate.\n";
+        }
+
+        return newnode;
+    }
+
+    void inject(int year, string name) {
+        root = insertEvent(root, year, name);
+    }
+
+    // SEARCH FUNCTION
+    void search(int year) {
+        cout << "\nSearching for " << year << "...\n";
+
+        node* temp = root;
+
+        while (temp != NULL) {
+            if (year == temp->year) {
+                cout << "Year found!\n";
+                cout << temp->year << ": " << temp->eventName << endl;
+                return;
+            }
+            else if (year < temp->year) {
+                temp = temp->left;
+            }
+            else {
+                temp = temp->right;
+            }
+        }
+
+        // If loop ends
+        cout << "The year you searched is NOT present!\n";
+    }
+
+    // FIND MINIMUM
+    node* findMin(node* newnode) {
+        while (newnode->left != NULL) {
+            newnode = newnode->left;
+        }
+        return newnode;
+    }
+
+    // DELETE FUNCTION
+    node* deleteEvent(node* newnode, int year) {
+
+        if (newnode == NULL) return NULL;
+
+        if (year < newnode->year) {
+            newnode->left = deleteEvent(newnode->left, year);
+        }
+        else if (year > newnode->year) {
+            newnode->right = deleteEvent(newnode->right, year);
+        }
+        else {
+            cout << "\nParadox detected at " << year << "!\n";
+
+            // Case 1: No children
+            if (newnode->left == NULL && newnode->right == NULL) {
+                delete newnode;
+                cout << "Deleting " << year << "...\n";
+                return NULL;
+            }
+
+            // Case 2: Only right child
+            else if (newnode->left == NULL) {
+                node* temp = newnode->right;
+                delete newnode;
+                return temp;
+            }
+
+            // Case 3: Only left child
+            else if (newnode->right == NULL) {
+                node* temp = newnode->left;
+                delete newnode;
+                return temp;
+            }
+
+            // Case 4: Two children
+            else {
+                node* temp = findMin(newnode->right);
+                newnode->year = temp->year;
+                newnode->eventName = temp->eventName;
+                newnode->right = deleteEvent(newnode->right, temp->year);
+            }
+        }
+
+        return newnode;
+    }
+
+    void paradox(int year) {
+        root = deleteEvent(root, year);
+    }
+
+    // PRINT INORDER
+    void printInOrder(node* temp) {
+        if (temp == NULL) return;
+        printInOrder(temp->left);
+        cout << temp->year << ": " << temp->eventName << endl;
+        printInOrder(temp->right);
+    }
+
+    void report() {
+        cout << "\n--- Chronological Report ---\n";
+        printInOrder(root);
+        cout << "----------------------------\n";
+    }
+};
+
+int main() {
+
+    TimeStream t;
+
+    t.inject(2050, "Mars Colony Established");
+    t.inject(1969, "Moon Landing");
+    t.inject(2100, "Warp Drive Invented");
+    t.inject(2000, "Y2K Bug");
+
+    t.search(1969);
+
+    t.inject(1990, "World Wide Web");
+
+    t.paradox(2000);
+
+    t.report();
+
+    t.search(2000);
+
+    return 0;
+}
